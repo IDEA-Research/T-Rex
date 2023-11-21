@@ -13,6 +13,11 @@
 
 </div>
 
+<!-- insert a gif here -->
+<div align=center>
+  <img src="assets/TRex.gif" width=800 >
+</div>
+
 ----
 
 # What is T-Rex 🦖
