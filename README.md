@@ -12,6 +12,7 @@
 ![Static Badge](https://img.shields.io/badge/T--Rex-Alpha-1) [![arXiv preprint](http://img.shields.io/badge/arXiv-2037.08723-b31b1b)](https://arxiv.org/pdf/2307.08723) [![Static Badge](https://img.shields.io/badge/Try_Demo!-blue?logo=chainguard&logoColor=green)](https://huggingface.co/spaces/Mountchicken/MAERec-Gradio) [![Homepage](https://img.shields.io/badge/homepage-visit-blue)](https://T-Rex-counting.github.io/) [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FMountchicken%2FT-Rex&count_bg=%2379C83D&title_bg=%23DF9B9B&icon=iconify.svg&icon_color=%23FFF9F9&title=VISITORS&edge_flat=false)](https://hits.seeyoufarm.com)
 
 </div>
+
 ----
 
 # What is T-Rex 🦖
