@@ -21,6 +21,11 @@
 
 ----
 
+<!-- Add demo video from youtube -->
+# Introduction Video 🎥
+<!-- Add a video here -->
+![Video Name](https://user-images.githubusercontent.com/58986949/115314310-805b2780-a1a7-11eb-8558-648a367ea231.mp4)
+
 # What is T-Rex 🦖
 - T-Rex is an interactive object counting model that can first detect then count any objects through visual prompting, which is highlighted by the following features:
   - **Open-Set**: T-Rex possess the capacity to count any object, without constraints on predefined categories.
