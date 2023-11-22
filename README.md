@@ -21,6 +21,7 @@
 
 ----
 
+
 <!-- Add demo video from youtube -->
 # Introduction Video 🎥
 <!-- Add a video here -->
@@ -72,9 +73,9 @@
   - ⚠️ For now, the demo only support **box prompt mode**. We will add more features in the future.
 ![demo](assets/demo.jpeg)
 
-<!-- 
+<!-- <!-- 
 # BibTeX 📚
 ```
 Wating for technical report
 ``` -->
-
+**Technical Report is Coming Soon!**
