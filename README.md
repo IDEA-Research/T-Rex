@@ -73,9 +73,15 @@
   - ⚠️ For now, the demo only support **box prompt mode**. We will add more features in the future.
 ![demo](assets/demo.jpeg)
 
-<!-- <!-- 
+
 # BibTeX 📚
 ```
-Wating for technical report
-``` -->
-**Technical Report is Coming Soon!**
+@misc{jiang2023trex,
+      title={T-Rex: Counting by Visual Prompting}, 
+      author={Qing Jiang and Feng Li and Tianhe Ren and Shilong Liu and Zhaoyang Zeng and Kent Yu and Lei Zhang},
+      year={2023},
+      eprint={2311.13596},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
+```
