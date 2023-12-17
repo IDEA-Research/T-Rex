@@ -73,6 +73,8 @@
   - ⚠️ For now, the demo only support **box prompt mode**. We will add more features in the future.
 ![demo](assets/demo.jpeg)
 
+# CA-44 Benchmark 📊
+- [CA-44 Benchmark](CA44_Benchmark/README.md)
 
 # BibTeX 📚
 ```
