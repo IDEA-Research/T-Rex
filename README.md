@@ -51,7 +51,7 @@
 
 # What Can T-Rex Do 📝
 - T-Rex can be applyed to various domains for detection/counting including but not limited to Agriculture, Industry, Livestock, Biology, Medicine, Retail, Electronic, Transportation, Logistics, Human, etc. 
-- T-Rex can also serve as an open-set object detector, which can be applied for automatic annotaion. It process exponential zero-shot detection capability, and offers strong performance in dense and overlapping scenes.
+- T-Rex can also serve as an open-set object detector, which can be applied for automatic annotation. It process exponential zero-shot detection capability, and offers strong performance in dense and overlapping scenes.
 - We list some of the potential applications of T-Rex below:
 
 <!-- There image each row -->
