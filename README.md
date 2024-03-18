@@ -39,6 +39,9 @@
   <img src="assets/about-img.png" width=400 >
 </div>
 
+# News :rocket:
+:fire: We release the [training and inference code](https://github.com/UX-Decoder/DINOv) of [DINOv](https://arxiv.org/pdf/2311.13601.pdf), which can handle in-context **visual prompts** for open-set and referring detection & segmentation. Check it out!
+
 # How Does T-Rex Work ⚙️
 - T-Rex provides three major workflows for interactive object counting / detection.
   - **Positive-only Prompt Mode**: T-Rex can detect then count similar objects in an image with just a single click or box drawing. Additional visual prompts can also be added for densely packed or small objects
