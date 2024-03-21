@@ -40,7 +40,7 @@
 </div>
 
 # News :rocket:
-:fire: We release the [training and inference code](https://github.com/UX-Decoder/DINOv) of [DINOv](https://arxiv.org/pdf/2311.13601.pdf), which can handle in-context **visual prompts** for open-set and referring detection & segmentation. Check it out!
+:fire: We release the [training and inference code](https://github.com/UX-Decoder/DINOv) and [demo link](http://semantic-sam.xyzou.net:6099/) of [DINOv](https://arxiv.org/pdf/2311.13601.pdf), which can handle in-context **visual prompts** for open-set and referring detection & segmentation. Check it out!
 
 # How Does T-Rex Work ⚙️
 - T-Rex provides three major workflows for interactive object counting / detection.
