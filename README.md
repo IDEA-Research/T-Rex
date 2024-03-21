@@ -14,7 +14,8 @@
 
 ----
 <!-- Add demo video from youtube -->
-# Introduction Video 🎥
+# Introduction Video 🎥 
+Turn on the music if possible 🎧
 <!-- Add a video here -->
 [![Video Name](assets/trex2/video_cover.jpg)](https://github.com/Mountchicken/Union14M/assets/65173622/60be19f5-88e4-478e-b1a3-af62b8d6d177)
 
