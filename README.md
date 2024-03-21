@@ -30,6 +30,7 @@
   - [Generic Visual Prompt API](#generic-visual-prompt-api)
   - [Customize Visual Prompt Embedding API](#customize-visual-prompt-embedding-api)
   - [Embedding Inference API](#embedding-inference-api)
+- [4. Related Works](#4-related-works)
 - [BibTeX 📚](#bibtex-)
 
 # 1. Introduction 📚
@@ -110,7 +111,8 @@ With the visual prompt embeddings generated from the previous API. You can use i
     python demo_examples/embedding_inference.py --token <your_token> 
   ```
 
-
+# 4. Related Works
+:fire: We release the [training and inference code](https://github.com/UX-Decoder/DINOv) and [demo link](http://semantic-sam.xyzou.net:6099/) of [DINOv](https://arxiv.org/pdf/2311.13601.pdf), which can handle in-context **visual prompts** for open-set and referring detection & segmentation. Check it out!
 
 # BibTeX 📚
 ```
