@@ -117,11 +117,11 @@ With the visual prompt embeddings generated from the previous API. You can use i
 
 # BibTeX 📚
 ```
-@misc{jiang2023trex,
-      title={T-Rex: Counting by Visual Prompting}, 
-      author={Qing Jiang and Feng Li and Tianhe Ren and Shilong Liu and Zhaoyang Zeng and Kent Yu and Lei Zhang},
-      year={2023},
-      eprint={2311.13596},
+@misc{jiang2024trex2,
+      title={T-Rex2: Towards Generic Object Detection via Text-Visual Prompt Synergy}, 
+      author={Qing Jiang and Feng Li and Zhaoyang Zeng and Tianhe Ren and Shilong Liu and Lei Zhang},
+      year={2024},
+      eprint={2403.14610},
       archivePrefix={arXiv},
       primaryClass={cs.CV}
 }
