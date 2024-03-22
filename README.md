@@ -66,7 +66,7 @@ Install the API package and acuqire the API token from the email.
 ```bash
 git clone https://github.com/IDEA-Research/T-Rex.git
 cd T-Rex
-pip install dds-cloudapi-sdk==0.0.5
+pip install dds-cloudapi-sdk==0.1.1
 pip install -v -e .
 ```
 
