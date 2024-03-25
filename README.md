@@ -80,8 +80,8 @@ pip install -v -e .
   ```
   - You are supposed get the following visualization results at `demo_vis/`
     <div align=center>
-      <img src="assets/demo_vis/interactive_0.jpg" width=400 >
-      <img src="assets/demo_vis/interactive_1.jpg" height=285 >
+      <img src="assets/trex2/interactive_0.jpg" width=400 >
+      <img src="assets/trex2/interactive_1.jpg" height=285 >
     </div>
 
 ## Generic Visual Prompt API
@@ -93,9 +93,9 @@ and detect on the other image.
   ```
   - You are supposed get the following visualization results at `demo_vis/`
     <div align=center>
-      <img src="assets/demo_vis/generic_prompt1.jpg" width=280 > +
-      <img src="assets/demo_vis/generic_prompt2.jpg" width=280 > =
-      <img src="assets/demo_vis/generic.jpg" width=280 >
+      <img src="assets/trex2_api_examples/generic_prompt1.jpg" width=280 > +
+      <img src="assets/trex2_api_examples/generic_prompt2.jpg" width=280 > =
+      <img src="assets/trex2/generic.jpg" width=280 >
     </div>
 
 ## Customize Visual Prompt Embedding API
