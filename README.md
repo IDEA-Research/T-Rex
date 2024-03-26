@@ -71,7 +71,7 @@ We are now opening free API access to T-Rex2. For educators, students, and resea
 
 
 ## Setup
-Install the API package and acuqire the API token from the email.
+Install the API package and acquire the API token from the email.
 ```bash
 git clone https://github.com/IDEA-Research/T-Rex.git
 cd T-Rex
