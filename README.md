@@ -19,8 +19,13 @@ Turn on the music if possible 🎧
 <!-- Add a video here -->
 [![Video Name](assets/trex2/video_cover.jpg)](https://github.com/Mountchicken/Union14M/assets/65173622/60be19f5-88e4-478e-b1a3-af62b8d6d177)
 
+# News 📰
+- **2024-03-26**: New Gradio demo available🤗! Get our API but don't know how to use it? We are now providing a local Gradio demo that provides GUI interface to support your usage. Check here: [Gradio APP]()
+
+
 # Contents 📜
 - [Introduction Video 🎥](#introduction-video-)
+- [News 📰](#news-)
 - [Contents 📜](#contents-)
 - [1. Introduction 📚](#1-introduction-)
   - [What Can T-Rex Do 📝](#what-can-t-rex-do-)
@@ -31,7 +36,11 @@ Turn on the music if possible 🎧
   - [Generic Visual Prompt API](#generic-visual-prompt-api)
   - [Customize Visual Prompt Embedding API](#customize-visual-prompt-embedding-api)
   - [Embedding Inference API](#embedding-inference-api)
-- [4. Related Works](#4-related-works)
+- [4. Local Gradio Demo with API🎨](#4-local-gradio-demo-with-api)
+  - [4.1. Setup](#41-setup)
+  - [4.2. Run the Gradio Demo](#42-run-the-gradio-demo)
+  - [4.3. Basic Operations](#43-basic-operations)
+- [5. Related Works](#5-related-works)
 - [BibTeX 📚](#bibtex-)
 
 # 1. Introduction 📚
@@ -112,7 +121,33 @@ With the visual prompt embeddings generated from the previous API. You can use i
     python demo_examples/embedding_inference.py --token <your_token> 
   ```
 
-# 4. Related Works
+# 4. Local Gradio Demo with API🎨
+<div align=center>
+  <img src="assets/trex2/gradio.jpg" width=500>
+</div>
+
+## 4.1. Setup
+- Install T-Rex2 API if you haven't done so
+```bash
+- install gradio and other dependencies
+```bash
+# install gradio and other dependencies
+pip install gradio==4.22.0
+pip install gradio-image-prompter
+```
+
+## 4.2. Run the Gradio Demo
+```bash
+python gradio_demo.py --trex2_api_token <your_token>
+```
+
+## 4.3. Basic Operations
+- **Draw Box**: Draw a box on the image to specify the object to be detected. Drag the left mouse button to draw a box.
+- **Draw Point**: Draw a point on the image to specify the object to be detected. Click the left mouse button to draw a point.
+- **Interacive Visual Prompt**: Provide visual prompts in boxes or points format on a given image to specify the object to be detected. The Input Target Image and Interactive Visual Prompt Image should be the same
+- **Generic Visual Prompt**: Provide visual prompts on multiple reference images and detect on the other image.
+
+# 5. Related Works
 :fire: We release the [training and inference code](https://github.com/UX-Decoder/DINOv) and [demo link](http://semantic-sam.xyzou.net:6099/) of [DINOv](https://arxiv.org/pdf/2311.13601.pdf), which can handle in-context **visual prompts** for open-set and referring detection & segmentation. Check it out!
 
 # BibTeX 📚

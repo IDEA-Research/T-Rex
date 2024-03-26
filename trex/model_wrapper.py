@@ -1,9 +1,21 @@
-from dds_cloudapi_sdk import Client
-from dds_cloudapi_sdk import Config
-from typing import List, Dict
-from dds_cloudapi_sdk import BatchRectInfer, BatchPointInfer, BatchEmbdInfer
-from dds_cloudapi_sdk import BatchRectPrompt, BatchPointPrompt, BatchEmbdPrompt
-from dds_cloudapi_sdk import TRexInteractiveInfer, TRexGenericInfer, TRexEmbdCustomize, TRexEmbdInfer
+import tempfile
+from typing import Dict, List, Union
+import numpy as np
+from dds_cloudapi_sdk import (
+    BatchEmbdInfer,
+    BatchEmbdPrompt,
+    BatchPointInfer,
+    BatchPointPrompt,
+    BatchRectInfer,
+    BatchRectPrompt,
+    Client,
+    Config,
+    TRexEmbdCustomize,
+    TRexEmbdInfer,
+    TRexGenericInfer,
+    TRexInteractiveInfer,
+)
+from PIL import Image
 
 
 class TRex2APIWrapper:
@@ -76,22 +88,26 @@ class TRex2APIWrapper:
         for prompt in prompts:
             if prompt["type"] == "rect":
                 prompt = BatchRectInfer(
-                    image=self.client.upload_file(prompt["prompt_image"]),
+                    image=self.get_image_url(prompt["prompt_image"]),
                     prompts=[
                         BatchRectPrompt(
                             category_id=prompt["prompts"][i]["category_id"],
-                            rects=prompt["prompts"][i]["rects"])
+                            rects=prompt["prompts"][i]["rects"],
+                        )
                         for i in range(len(prompt["prompts"]))
-                    ])
+                    ],
+                )
             elif prompt["type"] == "point":
                 prompt = BatchPointInfer(
-                    image=self.client.upload_file(prompt["prompt_image"]),
+                    image=self.get_image_url(prompt["prompt_image"]),
                     prompts=[
                         BatchPointPrompt(
                             category_id=prompt["prompts"][i]["category_id"],
-                            points=prompt["prompts"][i]["points"])
+                            points=prompt["prompts"][i]["points"],
+                        )
                         for i in range(len(prompt["prompts"]))
-                    ])
+                    ],
+                )
             else:
                 assert False, "Invalid prompt type"
             input_prompts.append(prompt)
@@ -103,19 +119,19 @@ class TRex2APIWrapper:
     def generic_inference(self, target_image: str, prompts: List[dict]):
         """Generic visual prompt inference workflow. Users can provide prompt on multiple image and
         get the boxes, scores on target image. In generic mode, we will hypothesis that there is
-        only one category per image and we do not support batch inference. Note that different 
+        only one category per image and we do not support batch inference. Note that different
         prompt image must use the same prompt type
 
         Args:
             target_image (str): Path to the image file.
             prompts (List[List[dict]]): annotation in standard coco format:
                 [
-                    {   
+                    {
                         "rect": [[ 10, 10, 20, 30],[ 10, 10, 20, 30]]  // [xmin, ymin, xmax, ymax],
                         "point" (optional): [[cx, cy]]. Point and bbox can not be provided at the same time.
                         "prompt_image" (Union[str, Image.Image]): A prompt image for the target image.
                     },
-                    {   
+                    {
                         "rect": [[ 10, 10, 40, 50],[ 20, 20, 30, 30]]  // [xmin, ymin, xmax, ymax],
                         "point" (optional): [[cx, cy]]. Point and bbox can not be provided at the same time.
                         "prompt_image" (Union[str, Image.Image]): A prompt image for the target image.
@@ -148,33 +164,34 @@ class TRex2APIWrapper:
         prompt_type = prompt_types[0]
         for prompt in prompts:
             if prompt_type == "rects":
-                prompt = BatchRectPrompt(image=self.client.upload_file(
-                    prompt["prompt_image"]),
-                                         rects=prompt["rects"])
+                prompt = BatchRectPrompt(
+                    image=self.get_image_url(prompt["prompt_image"]),
+                    rects=prompt["rects"],
+                )
             elif prompt_type == "points":
-                prompt = BatchPointPrompt(image=self.client.upload_file(
-                    prompt["prompt_image"]),
-                                          points=prompt["points"])
+                prompt = BatchPointPrompt(
+                    image=self.get_image_url(prompt["prompt_image"]),
+                    points=prompt["points"],
+                )
             input_prompts.append(prompt)
         # call the API
-        task = TRexGenericInfer(self.client.upload_file(target_image),
-                                input_prompts)
+        task = TRexGenericInfer(self.get_image_url(target_image), input_prompts)
         self.client.run_task(task)
         return self.postprocess([task.result.objects])[0]
 
     def customize_embedding(self, prompts: List[dict]):
-        """Customize visual prompt embeddings. Users can provide multiple prompt images to 
+        """Customize visual prompt embeddings. Users can provide multiple prompt images to
         get one embedding.
 
         Args:
             prompts (List[List[dict]]): annotation in standard coco format:
                 [
-                    {   
+                    {
                         "rect": [[ 10, 10, 20, 30],[ 10, 10, 20, 30]]  // [xmin, ymin, xmax, ymax],
                         "point" (optional): [[cx, cy]]. Point and bbox can not be provided at the same time.
                         "prompt_image" (Union[str, Image.Image]): A prompt image for the target image.
                     },
-                    {   
+                    {
                         "rect": [[ 10, 10, 40, 50],[ 20, 20, 30, 30]]  // [xmin, ymin, xmax, ymax],
                         "point" (optional): [[cx, cy]]. Point and bbox can not be provided at the same time.
                         "prompt_image" (Union[str, Image.Image]): A prompt image for the target image.
@@ -199,13 +216,15 @@ class TRex2APIWrapper:
         prompt_type = prompt_types[0]
         for prompt in prompts:
             if prompt_type == "rects":
-                prompt = BatchRectPrompt(image=self.client.upload_file(
-                    prompt["prompt_image"]),
-                                         rects=prompt["rects"])
+                prompt = BatchRectPrompt(
+                    image=self.get_image_url(prompt["prompt_image"]),
+                    rects=prompt["rects"],
+                )
             elif prompt_type == "points":
-                prompt = BatchPointPrompt(image=self.client.upload_file(
-                    prompt["prompt_image"]),
-                                          points=prompt["points"])
+                prompt = BatchPointPrompt(
+                    image=self.get_image_url(prompt["prompt_image"]),
+                    points=prompt["points"],
+                )
             input_prompts.append(prompt)
         # call the API
         task = TRexEmbdCustomize(batch_prompts=input_prompts)
@@ -266,14 +285,15 @@ class TRex2APIWrapper:
         input_prompts = []
         for prompt in prompts:
             prompt = BatchEmbdInfer(
-                image=self.client.upload_file(prompt["image"]),
+                image=self.get_image_url(prompt["image"]),
                 prompts=[
                     BatchEmbdPrompt(
                         category_id=prompt["prompts"][i]["category_id"],
-                        embd=self.client.upload_file(
-                            prompt["prompts"][i]["embd"]))
+                        embd=self.get_image_url(prompt["prompts"][i]["embd"]),
+                    )
                     for i in range(len(prompt["prompts"]))
-                ])
+                ],
+            )
             input_prompts.append(prompt)
         # call the API
         task = TRexEmbdInfer(input_prompts)
@@ -289,7 +309,7 @@ class TRex2APIWrapper:
                     - category_id (int): The category id of the object
                     - score (float): The score of the object
                     - bbox (List[int]): The bounding box of the object in format [xmin, ymin, xmax, ymax]
-        
+
         Returns:
             List[Dict]: Return a list of dict in format:
                 [
@@ -313,9 +333,26 @@ class TRex2APIWrapper:
                     # generic inference does not return category_id
                     labels.append(0)
                 boxes.append(obj.bbox)
-            results.append({
-                "scores": scores,
-                "labels": labels,
-                "boxes": boxes
-            })
+            results.append({"scores": scores, "labels": labels, "boxes": boxes})
         return results
+
+    def get_image_url(self, image: Union[str, np.ndarray]):
+        """Upload Image to server and return the url
+
+        Args:
+            image (Union[str, np.ndarray]): The image to upload. Can be a file path or np.ndarray.
+                If it is a np.ndarray, it will be saved to a temporary file.
+
+        Returns:
+            str: The url of the image
+        """
+        if isinstance(image, str):
+            url = self.client.upload_file(image)
+        else:
+            with tempfile.NamedTemporaryFile(delete=True, suffix=".png") as tmp_file:
+                # image is in numpy format, convert to PIL Image
+                image = Image.fromarray(image)
+                image.save(tmp_file, format="PNG")
+                tmp_file_path = tmp_file.name
+                url = self.client.upload_file(tmp_file_path)
+        return url
