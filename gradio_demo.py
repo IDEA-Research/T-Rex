@@ -277,6 +277,8 @@ def inference(
         "7": generic_vp7,
         "8": generic_vp8,
     }
+    if target_image is None:
+        gr.Error("Please provide a target image")
     # tell if generic visual prompt is empty
     generic_is_empty = True
     for _, v in generic_vp_dict.items():
@@ -360,8 +362,28 @@ if __name__ == "__main__":
 
             with gr.Column():
                 with gr.Row():
+                    interactions = "LeftClick (Point Prompt) | PressMove (Box Prompt)"
+                    gr.Markdown(
+                        "<h3 style='text-align: center'> This is for interactive visual prompt</h3>"
+                    )
+                    gr.Markdown(
+                        "<h3 style='text-align: center'>[🖱️ | 🖐️]: 🌟🌟 {} 🌟🌟 </h3>".format(
+                            interactions
+                        )
+                    )
+                with gr.Row():
                     interactive = gr.TabbedInterface(
                         [interactive_1], ["Interactive Visual Prompt"]
+                    )
+                with gr.Row():
+                    interactions = "LeftClick (Point Prompt) | PressMove (Box Prompt)"
+                    gr.Markdown(
+                        "<h3 style='text-align: center'> This is for generic visual prompt</h3>"
+                    )
+                    gr.Markdown(
+                        "<h3 style='text-align: center'>[🖱️ | 🖐️]: 🌟🌟 {} 🌟🌟 </h3>".format(
+                            interactions
+                        )
                     )
                 with gr.Row():
                     generic = gr.TabbedInterface(
