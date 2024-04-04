@@ -145,7 +145,7 @@ python gradio_demo.py --trex2_api_token <your_token>
 ## 4.3. Basic Operations
 - **Draw Box**: Draw a box on the image to specify the object to be detected. Drag the left mouse button to draw a box.
 - **Draw Point**: Draw a point on the image to specify the object to be detected. Click the left mouse button to draw a point.
-- **Interacive Visual Prompt**: Provide visual prompts in boxes or points format on a given image to specify the object to be detected. The Input Target Image and Interactive Visual Prompt Image should be the same
+- **Interactive Visual Prompt**: Provide visual prompts in boxes or points format on a given image to specify the object to be detected. The Input Target Image and Interactive Visual Prompt Image should be the same
 - **Generic Visual Prompt**: Provide visual prompts on multiple reference images and detect on the other image.
 
 # 5. Related Works
