@@ -46,11 +46,11 @@ class TRex2APIWrapper:
                         "prompts": [
                             {
                                 "category_id": 1,
-                                "rect": [[ 10, 10, 20, 30 ],[ 10, 10, 20, 30 ]] // N * [xmin, ymin, xmax, ymax],
+                                "rects": [[ 10, 10, 20, 30 ],[ 10, 10, 20, 30 ]] // N * [xmin, ymin, xmax, ymax],
                             },
                             {
                                 "category_id": 2,
-                                "rect": [[ 10, 10, 20, 30 ],[ 10, 10, 20, 30 ]] // [xmin, ymin, xmax, ymax]
+                                "rects": [[ 10, 10, 20, 30 ],[ 10, 10, 20, 30 ]] // [xmin, ymin, xmax, ymax]
                             }
                         ]
                     }
@@ -61,11 +61,11 @@ class TRex2APIWrapper:
                         "prompts": [
                             {
                                 "category_id": 1,
-                                "point": [[ 10, 10],[ 10, 10]]  // N * [xmin, ymin, xmax, ymax],
+                                "points": [[ 10, 10],[ 10, 10]]  // N * [xmin, ymin, xmax, ymax],
                             },
                             {
                                 "category_id": 2,
-                                "point": [[ 10, 10],[ 10, 10]]  // [xmin, ymin, xmax, ymax]
+                                "points": [[ 10, 10],[ 10, 10]]  // [xmin, ymin, xmax, ymax]
                             }
                         ]
                     }
@@ -127,13 +127,13 @@ class TRex2APIWrapper:
             prompts (List[List[dict]]): annotation in standard coco format:
                 [
                     {
-                        "rect": [[ 10, 10, 20, 30],[ 10, 10, 20, 30]]  // [xmin, ymin, xmax, ymax],
-                        "point" (optional): [[cx, cy]]. Point and bbox can not be provided at the same time.
+                        "rects": [[ 10, 10, 20, 30],[ 10, 10, 20, 30]]  // [xmin, ymin, xmax, ymax],
+                        "points" (optional): [[cx, cy]]. Point and bbox can not be provided at the same time.
                         "prompt_image" (Union[str, Image.Image]): A prompt image for the target image.
                     },
                     {
-                        "rect": [[ 10, 10, 40, 50],[ 20, 20, 30, 30]]  // [xmin, ymin, xmax, ymax],
-                        "point" (optional): [[cx, cy]]. Point and bbox can not be provided at the same time.
+                        "rects": [[ 10, 10, 40, 50],[ 20, 20, 30, 30]]  // [xmin, ymin, xmax, ymax],
+                        "points" (optional): [[cx, cy]]. Point and bbox can not be provided at the same time.
                         "prompt_image" (Union[str, Image.Image]): A prompt image for the target image.
                     },
                 ]
@@ -187,13 +187,13 @@ class TRex2APIWrapper:
             prompts (List[List[dict]]): annotation in standard coco format:
                 [
                     {
-                        "rect": [[ 10, 10, 20, 30],[ 10, 10, 20, 30]]  // [xmin, ymin, xmax, ymax],
-                        "point" (optional): [[cx, cy]]. Point and bbox can not be provided at the same time.
+                        "rects": [[ 10, 10, 20, 30],[ 10, 10, 20, 30]]  // [xmin, ymin, xmax, ymax],
+                        "points" (optional): [[cx, cy]]. Point and bbox can not be provided at the same time.
                         "prompt_image" (Union[str, Image.Image]): A prompt image for the target image.
                     },
                     {
-                        "rect": [[ 10, 10, 40, 50],[ 20, 20, 30, 30]]  // [xmin, ymin, xmax, ymax],
-                        "point" (optional): [[cx, cy]]. Point and bbox can not be provided at the same time.
+                        "rects": [[ 10, 10, 40, 50],[ 20, 20, 30, 30]]  // [xmin, ymin, xmax, ymax],
+                        "points" (optional): [[cx, cy]]. Point and bbox can not be provided at the same time.
                         "prompt_image" (Union[str, Image.Image]): A prompt image for the target image.
                     },
                 ]
