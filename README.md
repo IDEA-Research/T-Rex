@@ -20,6 +20,7 @@ Turn on the music if possible 🎧
 [![Video Name](assets/trex2/video_cover.jpg)](https://github.com/Mountchicken/Union14M/assets/65173622/60be19f5-88e4-478e-b1a3-af62b8d6d177)
 
 # News 📰
+- **2024-05-17**: [Grounding DINO 1.5](https://github.com/IDEA-Research/Grounding-DINO-1.5-API) is released. This is IDEA Research's Most Capable Open-World Object Detection Model Series. It can detect any object throught text prompts!
 - **2024-03-27**: Online Gradio demo hosted at [https://huggingface.co/spaces/Mountchicken/T-Rex2](https://huggingface.co/spaces/Mountchicken/T-Rex2)
 - **2024-03-26**: New Gradio demo available🤗! Get our API but don't know how to use it? We are now providing a local Gradio demo that provides GUI interface to support your usage. Check here: [Gradio APP](#4-local-gradio-demo-with-api🎨)
 
