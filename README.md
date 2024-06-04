@@ -9,7 +9,7 @@
 
 <div align=center>
 
-![Static Badge](https://img.shields.io/badge/T--Rex-2-2) [![arXiv preprint](https://img.shields.io/badge/arxiv_2403.14610-blue%3Flog%3Darxiv)](https://arxiv.org/pdf/2403.14610.pdf)   [![Homepage](https://img.shields.io/badge/homepage-visit-blue)](https://deepdataspace.com/home) [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FMountchicken%2FT-Rex&count_bg=%2379C83D&title_bg=%23DF9B9B&icon=iconify.svg&icon_color=%23FFF9F9&title=VISITORS&edge_flat=false)](https://hits.seeyoufarm.com) [![Static Badge](https://img.shields.io/badge/Try_Demo!-blue?logo=chainguard&logoColor=green)](https://deepdataspace.com/playground/ivp) [![Gradio demo](https://img.shields.io/badge/%F0%9F%A4%97%20demo-Gradio-ff7c00)](https://huggingface.co/spaces/Mountchicken/T-Rex2)
+![Static Badge](https://img.shields.io/badge/T--Rex-2-2) [![arXiv preprint](https://img.shields.io/badge/arxiv_2403.14610-blue%3Flog%3Darxiv)](https://arxiv.org/pdf/2403.14610.pdf)   [![Homepage](https://img.shields.io/badge/homepage-visit-blue)](https://deepdataspace.com/home) [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FMountchicken%2FT-Rex&count_bg=%2379C83D&title_bg=%23DF9B9B&icon=iconify.svg&icon_color=%23FFF9F9&title=VISITORS&edge_flat=false)](https://hits.seeyoufarm.com) [![Static Badge](https://img.shields.io/badge/Try_Demo!-blue?logo=chainguard&logoColor=green)](https://deepdataspace.com/playground/ivp)
 </div>
 
 ----
@@ -21,9 +21,6 @@ Turn on the music if possible 🎧
 
 # News 📰
 - **2024-05-17**: [Grounding DINO 1.5](https://github.com/IDEA-Research/Grounding-DINO-1.5-API) is released. This is IDEA Research's Most Capable Open-World Object Detection Model Series. It can detect any object throught text prompts!
-- **2024-03-27**: Online Gradio demo hosted at [https://huggingface.co/spaces/Mountchicken/T-Rex2](https://huggingface.co/spaces/Mountchicken/T-Rex2)
-- **2024-03-26**: New Gradio demo available🤗! Get our API but don't know how to use it? We are now providing a local Gradio demo that provides GUI interface to support your usage. Check here: [Gradio APP](#4-local-gradio-demo-with-api🎨)
-
 
 # Contents 📜
 - [Introduction Video 🎥](#introduction-video-)
