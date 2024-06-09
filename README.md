@@ -13,6 +13,9 @@
 </div>
 
 ----
+📌 If you find our project helpful and need more API token quotas, you can request additional tokens by [filling out this form](https://docs.google.com/forms/d/e/1FAIpQLSfjogAtkgoVyFX9wvCAE15mD7QtHdKdKOrVmcE5GT1xu-03Aw/viewform?usp=sf_link). Our team will review your request and allocate more tokens for your use in one or two days. You can also apply for more tokens by sending us an email.
+
+----
 <!-- Add demo video from youtube -->
 # Introduction Video 🎥 
 Turn on the music if possible 🎧
