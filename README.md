@@ -24,13 +24,13 @@ Turn on the music if possible 🎧
 
 # News 📰
 - **2024-06-24**: We have introduced two new free products based on T-Rex2:
-  - [**T-Rex Label**](https://www.trexlabel.com/?source=gh): T-Rex Label is an advanced annotation tool powerd by T-Rex2, specifically designed to handle the complexities of various industries and scenarios. It is the ideal choice for those aiming to streamline their workflows and effortlessly create high-quality datasets.
-
-[![Video Name](assets/trex2/trexlabel.jpg)](https://github.com/Mountchicken/CodeCookbook/assets/65173622/58129775-533d-4aad-88f4-e1992546f9ba)
-
   - [**Count Anything APP**](https://apps.apple.com/app/id6502489882): CountAnything is a versatile, efficient, and cost-effective counting tool that utilizes advanced computer vision algorithms, specifically T-Rex, for automated counting. It is applicable across various industries, including manufacturing, agriculture, and aquaculture.
   
 [![Video Name](assets/trex2/countanything.jpg)](https://github.com/Mountchicken/Mountchicken/assets/65173622/1cffc04a-d9be-46ec-b87e-f754b71d6e21)
+  
+  - [**T-Rex Label**](https://www.trexlabel.com/?source=gh): T-Rex Label is an advanced annotation tool powerd by T-Rex2, specifically designed to handle the complexities of various industries and scenarios. It is the ideal choice for those aiming to streamline their workflows and effortlessly create high-quality datasets.
+
+[![Video Name](assets/trex2/trexlabel.jpg)](https://github.com/Mountchicken/CodeCookbook/assets/65173622/58129775-533d-4aad-88f4-e1992546f9ba)
 
 - **2024-05-17**: [Grounding DINO 1.5](https://github.com/IDEA-Research/Grounding-DINO-1.5-API) is released. This is IDEA Research's Most Capable Open-World Object Detection Model Series. It can detect any object throught text prompts!
 
