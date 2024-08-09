@@ -77,7 +77,7 @@ We are now opening online demo for T-Rex2. [Check our demo here](https://deepdat
 
 
 # 3. API Usage Examples📚
-We are now opening free API access to T-Rex2. For educators, students, and researchers, we offer an API with extensive usage times to support your educational and research endeavors. You can get API at here [request API](https://deepdataspace.com/request_api).
+We are now opening free API access to T-Rex2. For educators, students, and researchers, we offer an API with extensive usage times to support your educational and research endeavors. You can get API at here [request API](https://cloud.deepdataspace.com/apply-token?from=github).
 - [Full API documentation can be found here](https://cloudapi-sdk.deepdataspace.com/dds_cloudapi_sdk/tasks/trex_interactive.html).
 
 
