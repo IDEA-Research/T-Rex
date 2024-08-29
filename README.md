@@ -13,6 +13,10 @@
 </div>
 
 ----
+🎉 **[T-Rex Label](https://trexlabel.com?source=gt) surpasses 2,000 users!**  
+Just three months after launch, [T-Rex Label](https://trexlabel.com?source=gt) has grown to over 2,000 users. In our latest release, we’ve improved the annotation tool's user experience and expanded the YOLO format export, making it easier for researchers to quickly build datasets. For any feedback, feel free to reach out at [trexlabel_dm@idea.edu.cn](mailto:trexlabel_dm@idea.edu.cn).
+
+----
 📌 If you find our project helpful and need more API token quotas, you can request additional tokens by [filling out this form](https://docs.google.com/forms/d/e/1FAIpQLSfjogAtkgoVyFX9wvCAE15mD7QtHdKdKOrVmcE5GT1xu-03Aw/viewform?usp=sf_link). Our team will review your request and allocate more tokens for your use in one or two days. You can also apply for more tokens by sending us an email.
 
 ----
