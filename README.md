@@ -165,6 +165,9 @@ python gradio_demo.py --trex2_api_token <your_token>
 # 5. Related Works
 :fire: We release the [training and inference code](https://github.com/UX-Decoder/DINOv) and [demo link](http://semantic-sam.xyzou.net:6099/) of [DINOv](https://arxiv.org/pdf/2311.13601.pdf), which can handle in-context **visual prompts** for open-set and referring detection & segmentation. Check it out!
 
+# 6. LICENSE
+We use [IDEA License 1.0](LICENSE)
+
 # BibTeX 📚
 ```
 @misc{jiang2024trex2,
