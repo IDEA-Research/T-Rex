@@ -16,7 +16,6 @@ def arg_parse():
     parser.add_argument(
         "--trex2_api_token",
         type=str,
-        default="531b8dcb21a51531f1215bc4ca1e8e51",
         help="API token for T-Rex2",
     )
     parser.add_argument("--sam_type", type=str, default="vit_l", help="SAM model type")
