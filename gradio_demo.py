@@ -16,6 +16,7 @@ def arg_parse():
     parser.add_argument(
         "--trex2_api_token",
         type=str,
+        default="531b8dcb21a51531f1215bc4ca1e8e51",
         help="API token for T-Rex2",
     )
     parser.add_argument("--sam_type", type=str, default="vit_l", help="SAM model type")
@@ -182,23 +183,25 @@ def parse_visual_prompt(points: List):
 
 def pack_model_input_interactive(interactive_input):
     ref_image = interactive_input["image"]
+    ref_image = Image.fromarray(ref_image)
     ref_visual_prompt = interactive_input["points"]
     boxes, pos_points, neg_points = parse_visual_prompt(ref_visual_prompt)
     # boxes and points can not show at the same time
-    if len(boxes) > 0 and len(pos_points) > 0:
-        raise gr.Error("You can't draw both box and point at the same time")
+    if not len(boxes) > 0:
+        raise gr.Error("You can't draw box. We do not support point prompt for now")
     if len(boxes) > 0:
         prompts = {
             "prompt_image": ref_image,
             "type": "rect",
             "prompts": [{"category_id": 1, "rects": boxes}],
         }
-    else:
-        prompts = {
-            "prompt_image": ref_image,
-            "type": "point",
-            "prompts": [{"category_id": 1, "points": pos_points}],
-        }
+        interactions = [dict(type="rect", category_id=1, rect=box) for box in boxes]
+        prompts = [
+            dict(
+                image=ref_image,
+                interactions=interactions,
+            )
+        ]
     return prompts
 
 
@@ -208,16 +211,15 @@ def pack_model_input_generic(generic_vp_dict):
         if v is None:
             continue
         ref_image = v["image"]
+        ref_image = Image.fromarray(ref_image)
         ref_visual_prompt = v["points"]
         boxes, pos_points, _ = parse_visual_prompt(ref_visual_prompt)
         # boxes and points can not show at the same time
-        if len(boxes) > 0 and len(pos_points) > 0:
-            raise gr.Error("You can't draw both box and point at the same time")
+        if not len(boxes) > 0:
+            raise gr.Error("You can't draw box. We do not support point prompt for now")
         if len(boxes) > 0:
-            target = dict(prompt_image=ref_image, rects=boxes)
-        else:
-            target = dict(prompt_image=ref_image, points=pos_points)
-        prompts.append(target)
+            interactions = [dict(type="rect", category_id=1, rect=box) for box in boxes]
+            prompts.append(dict(image=ref_image, interactions=interactions))
     return prompts
 
 
@@ -242,7 +244,6 @@ def trex2_postprocess(
     trex2_results[0]["boxes"] = boxes
     trex2_results[0]["labels"] = labels
     trex2_results[0]["scores"] = scores
-    target_image = Image.fromarray(target_image)
     image_with_box = plot_boxes_to_image(
         target_image, trex2_results[0], return_point, point_width, return_score
     )[0]
@@ -267,6 +268,7 @@ def inference(
     point_width,
     return_score,
 ):
+
     generic_vp_dict = {
         "1": generic_vp1,
         "2": generic_vp2,
@@ -280,6 +282,7 @@ def inference(
     if target_image is None:
         gr.Error("Please provide a target image")
     # tell if generic visual prompt is empty
+    target_image = Image.fromarray(target_image)
     generic_is_empty = True
     for _, v in generic_vp_dict.items():
         if v is not None:
@@ -290,10 +293,10 @@ def inference(
     # 2. generic visual prompt
     if interactive_input is not None and generic_is_empty:
         prompts = pack_model_input_interactive(interactive_input)
-        trex2_results = trex2.interactve_inference([prompts])
+        trex2_results = trex2.visual_prompt_inference(target_image, prompts)[0]
     elif interactive_input is None and not generic_is_empty:
         prompts = pack_model_input_generic(generic_vp_dict)
-        trex2_results = trex2.generic_inference(target_image, prompts)
+        trex2_results = trex2.visual_prompt_inference(target_image, prompts)[0]
     else:
         raise gr.Error(
             "You should provide either interactive visual prompt or generic visual prompt"
@@ -445,4 +448,4 @@ if __name__ == "__main__":
             ],
             outputs=[output_image, num_count, coco_anno],
         )
-    demo.launch()
+    demo.launch(server_name="192.168.81.138", server_port=5612, debug=True)

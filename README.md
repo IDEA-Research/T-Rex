@@ -147,7 +147,6 @@ With the visual prompt embeddings generated from the previous API. You can use i
 - install gradio and other dependencies
 ```bash
 # install gradio and other dependencies
-pip install gradio==4.22.0
 pip install gradio-image-prompter
 ```
 
