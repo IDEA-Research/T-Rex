@@ -1,21 +1,39 @@
+import base64
 import tempfile
+import time
+from io import BytesIO
 from typing import Dict, List, Union
+
 import numpy as np
-from dds_cloudapi_sdk import (
-    BatchEmbdInfer,
-    BatchEmbdPrompt,
-    BatchPointInfer,
-    BatchPointPrompt,
-    BatchRectInfer,
-    BatchRectPrompt,
-    Client,
-    Config,
-    TRexEmbdCustomize,
-    TRexEmbdInfer,
-    TRexGenericInfer,
-    TRexInteractiveInfer,
-)
+import requests
 from PIL import Image
+
+
+def encode_image(image):
+    """
+    Encodes an image to a base64 string.
+
+    Args:
+        image (str or PIL.Image.Image): The image to encode.
+            - If str: should be a valid image file path.
+            - If PIL.Image.Image: image will be encoded from memory.
+
+    Returns:
+        str: Base64-encoded image string.
+    """
+    if isinstance(image, str):
+        # Treat as file path
+        with open(image, "rb") as image_file:
+            return base64.b64encode(image_file.read()).decode("utf-8")
+
+    elif isinstance(image, Image.Image):
+        # Encode from in-memory PIL image
+        buffer = BytesIO()
+        image.save(buffer, format="JPEG")  # You can change to PNG if needed
+        return base64.b64encode(buffer.getvalue()).decode("utf-8")
+
+    else:
+        raise TypeError("Input must be a file path (str) or PIL.Image.Image object.")
 
 
 class TRex2APIWrapper:
@@ -29,247 +47,183 @@ class TRex2APIWrapper:
     """
 
     def __init__(self, token: str):
-        self.client = Client(Config(token=token))
+        self.headers = {"Content-Type": "application/json", "Token": token}
 
-    def interactve_inference(self, prompts: List[Dict]):
-        """Interactive visual prompt inference workflow. Users can provide prompt
-        on current image and get the boxes, scores, labels. We take batch as input and
-        each image is a dict. Note that the maximum batch size is 4.
+    def call_api(self, task_dict):
+        resp = requests.post(
+            url="https://api.deepdataspace.com/v2/task/trex/detection",
+            json=task_dict,
+            headers=self.headers,
+        )
+        json_resp = resp.json()
+        if json_resp["msg"] != "ok":
+            raise RuntimeError(f"API call failed with error: {json_resp}")
+        task_uuid = json_resp["data"]["task_uuid"]
+
+        while True:
+            resp = requests.get(
+                f"https://api.deepdataspace.com/v2/task_status/{task_uuid}",
+                headers=self.headers,
+            )
+            json_resp = resp.json()
+            if json_resp["data"]["status"] not in ["waiting", "running"]:
+                break
+            time.sleep(1)
+
+        if json_resp["data"]["status"] == "failed":
+            raise RuntimeError(f"API call failed with error: {json_resp['msg']}")
+        elif json_resp["data"]["status"] == "success":
+            return json_resp
+
+    def convert_embedding_prompt(
+        self, target_image: Union[str, Image.Image], base64_embedding: str
+    ):
+        """Convert the prompt to the format required by the API"""
+        target_image_base64 = encode_image(target_image)
+        prompt = {
+            "model": "T-Rex-2.0",
+            "image": f"data:image/jpg;base64,{target_image_base64}",
+            "targets": ["bbox"],
+            "prompt": {"type": "embedding", "embedding": base64_embedding},
+        }
+        return prompt
+
+    def convert_visual_prompt(
+        self,
+        target_image: Union[str, Image.Image],
+        prompts: List[Dict],
+        return_type: List[str] = ["bbox"],
+    ):
+        """Convert the prompt to the format required by the API"""
+        target_image_base64 = encode_image(target_image)
+
+        for prompt in prompts:
+            prompt["image"] = f"data:image/jpg;base64,{encode_image(prompt['image'])}"
+
+        prompt = {
+            "model": "T-Rex-2.0",
+            "image": f"data:image/jpg;base64,{target_image_base64}",
+            "targets": return_type,
+            "prompt": {"type": "visual_images", "visual_images": prompts},
+        }
+
+        return prompt
+
+    def visual_prompt_inference(
+        self,
+        target_image: Union[str, Image.Image],
+        prompt: List[Dict],
+        return_type: List[str] = ["bbox"],
+    ):
+        """Visual prompt inference for both interactive and generic workflow.
 
         Args:
-            prompts (List[dict]): List of batch annotations, each batch annotation is a dict:
+            target_image (Union[str, Image.Image]): The image to upload. Can be a file path or PIL.Image
+            prompts (List[dict]): A list of prompt dict. Each dict is for one prompt image:
+                #  Box prompt
                 [
-                    # Batch 1, Box prompt
                     {
-                        "prompt_image": "test1.jpg",
-                        "type": "rect", // rect, point
-                        "prompts": [
+                        "image": (str or Image.Image): Prompt Image 1,
+                        "interactions": [
                             {
-                                "category_id": 1,
-                                "rect": [[ 10, 10, 20, 30 ],[ 10, 10, 20, 30 ]] // N * [xmin, ymin, xmax, ymax],
+                                "type": "rect",
+                                "category_id": 12,
+                                "rect": [159.78119507908616, 186.52658172231986, 337.2996485061512, 309.2963532513181],
                             },
                             {
-                                "category_id": 2,
-                                "rect": [[ 10, 10, 20, 30 ],[ 10, 10, 20, 30 ]] // [xmin, ymin, xmax, ymax]
-                            }
-                        ]
-                    }
-                    # Batch 2, Point prompt
-                    {
-                        "prompt_image": "test2.jpg",
-                        "type": "point", // rect, point.
-                        "prompts": [
-                            {
+                                "type": "rect",
                                 "category_id": 1,
-                                "point": [[ 10, 10],[ 10, 10]]  // N * [xmin, ymin, xmax, ymax],
+                                "rect": [159.78119507908616, 186.52658172231986, 337.2996485061512, 309.2963532513181],
+                            }
+                            ... # more prompt on current image
+                        ]
+                    },
+                    {
+                        "image": (str or Image.Image): Prompt Image 2,
+                        "interactions": [
+                            {
+                                "type": "rect",
+                                "category_id": 12,
+                                "rect": [159.78119507908616, 186.52658172231986, 337.2996485061512, 309.2963532513181],
                             },
                             {
-                                "category_id": 2,
-                                "point": [[ 10, 10],[ 10, 10]]  // [xmin, ymin, xmax, ymax]
+                                "type": "rect",
+                                "category_id": 1,
+                                "rect": [159.78119507908616, 186.52658172231986, 337.2996485061512, 309.2963532513181],
                             }
+                            ... # more prompt on current image
                         ]
                     }
-                    ...
+                    ... # more prompt image.
                 ]
+                #  Point prompt
+                [
+                    {
+                        "image": (str or Image.Image): Prompt Image 1,
+                        "interactions": [
+                            {
+                                "type": "point",
+                                "category_id": 12,
+                                "point": [159.78119507908616, 186.52658172231986],
+                            },
+                            {
+                                "type": "point",
+                                "category_id": 1,
+                                "point": [159.78119507908616, 186.52658172231986],
+                            }
+                            ... # more prompt on current image
+                        ]
+                    },
+                    {
+                        "image": (str or Image.Image): Prompt Image 2,
+                        "interactions": [
+                            {
+                                "type": "point",
+                                "category_id": 12,
+                                "point": [159.78119507908616, 186.52658172231986],
+                            },
+                            {
+                                "type": "point",
+                                "category_id": 1,
+                                "point": [159.78119507908616, 186.52658172231986],
+                            }
+                            ... # more prompt on current image
+                        ]
+                    }
+                    ... # more prompt image.
+                ]
+            return_type (List[str]): The type of return value. Currently only support "bbox" and "embedding".
 
         Returns:
-            List[Dict]: Return a list of dict in format:
-                [
-                    {
-                        "scores": (List[float]): A list of scores for each object in the batch
-                        "labels": (List[int]): A list of labels for each object in the batch
-                        "boxes": (List[List[int]]): A list of boxes for each object in the batch,
-                            in format [xmin, ymin, xmax, ymax]
-                    }
-                ]
+            detection_result (Dict): Detection result in format:
+                {
+                    "scores": (List[float]): A list of scores for each object in the batch
+                    "labels": (List[int]): A list of labels for each object in the batch
+                    "boxes": (List[List[int]]): A list of boxes for each object in the batch,
+                        in format [xmin, ymin, xmax, ymax]
+                }
+            base64_embedding (str): The base64 encoding of the embedding. Only available when
+                "embedding" is in return_type, else None
+
         """
-        # construct input prompts
-        input_prompts = []
-        for prompt in prompts:
-            if prompt["type"] == "rect":
-                prompt = BatchRectInfer(
-                    image=self.get_image_url(prompt["prompt_image"]),
-                    prompts=[
-                        BatchRectPrompt(
-                            category_id=prompt["prompts"][i]["category_id"],
-                            rects=prompt["prompts"][i]["rects"],
-                        )
-                        for i in range(len(prompt["prompts"]))
-                    ],
-                )
-            elif prompt["type"] == "point":
-                prompt = BatchPointInfer(
-                    image=self.get_image_url(prompt["prompt_image"]),
-                    prompts=[
-                        BatchPointPrompt(
-                            category_id=prompt["prompts"][i]["category_id"],
-                            points=prompt["prompts"][i]["points"],
-                        )
-                        for i in range(len(prompt["prompts"]))
-                    ],
-                )
-            else:
-                assert False, "Invalid prompt type"
-            input_prompts.append(prompt)
+        # Convert the interactive prompt to the format required by the API
+        prompt = self.convert_visual_prompt(target_image, prompt, return_type)
         # call the API
-        task = TRexInteractiveInfer(input_prompts)
-        self.client.run_task(task)
-        return self.postprocess(task.result.object_batches)
+        result = self.call_api(prompt)
+        detection_result = self.postprocess(result["data"]["result"]["objects"])
+        if "embedding" in return_type:
+            base64_embedding = result["data"]["result"]["embedding"]
+        else:
+            base64_embedding = None
+        return detection_result, base64_embedding
 
-    def generic_inference(self, target_image: str, prompts: List[dict]):
-        """Generic visual prompt inference workflow. Users can provide prompt on multiple image and
-        get the boxes, scores on target image. In generic mode, we will hypothesis that there is
-        only one category per image and we do not support batch inference. Note that different
-        prompt image must use the same prompt type
-
+    def embedding_inference(
+        self, target_image: Union[str, Image.Image], base64_embedding: str
+    ):
+        """Prompt inference workflow.
         Args:
-            target_image (str): Path to the image file.
-            prompts (List[List[dict]]): annotation in standard coco format:
-                [
-                    {
-                        "rect": [[ 10, 10, 20, 30],[ 10, 10, 20, 30]]  // [xmin, ymin, xmax, ymax],
-                        "point" (optional): [[cx, cy]]. Point and bbox can not be provided at the same time.
-                        "prompt_image" (Union[str, Image.Image]): A prompt image for the target image.
-                    },
-                    {
-                        "rect": [[ 10, 10, 40, 50],[ 20, 20, 30, 30]]  // [xmin, ymin, xmax, ymax],
-                        "point" (optional): [[cx, cy]]. Point and bbox can not be provided at the same time.
-                        "prompt_image" (Union[str, Image.Image]): A prompt image for the target image.
-                    },
-                ]
-
-        Returns:
-            List[Dict]: Return a list of dict in format:
-                [
-                    {
-                        "scores": (List[float]): A list of scores for each object in the batch
-                        "labels": (List[int]): A list of labels for each object in the batch
-                        "boxes": (List[List[int]]): A list of boxes for each object in the batch,
-                            in format [xmin, ymin, xmax, ymax]
-                    }
-                ]
-        """
-        input_prompts = []
-        prompt_types = []
-        # check prompt type
-        for prompt in prompts:
-            if "rects" in prompt:
-                prompt_types.append("rects")
-            elif "points" in prompt:
-                prompt_types.append("points")
-            else:
-                assert False, "Invalid prompt type"
-        # check if prompt type is consistent
-        assert len(set(prompt_types)) == 1, "Prompt type must be consistent"
-        prompt_type = prompt_types[0]
-        for prompt in prompts:
-            if prompt_type == "rects":
-                prompt = BatchRectPrompt(
-                    image=self.get_image_url(prompt["prompt_image"]),
-                    rects=prompt["rects"],
-                )
-            elif prompt_type == "points":
-                prompt = BatchPointPrompt(
-                    image=self.get_image_url(prompt["prompt_image"]),
-                    points=prompt["points"],
-                )
-            input_prompts.append(prompt)
-        # call the API
-        task = TRexGenericInfer(self.get_image_url(target_image), input_prompts)
-        self.client.run_task(task)
-        return self.postprocess([task.result.objects])[0]
-
-    def customize_embedding(self, prompts: List[dict]):
-        """Customize visual prompt embeddings. Users can provide multiple prompt images to
-        get one embedding.
-
-        Args:
-            prompts (List[List[dict]]): annotation in standard coco format:
-                [
-                    {
-                        "rect": [[ 10, 10, 20, 30],[ 10, 10, 20, 30]]  // [xmin, ymin, xmax, ymax],
-                        "point" (optional): [[cx, cy]]. Point and bbox can not be provided at the same time.
-                        "prompt_image" (Union[str, Image.Image]): A prompt image for the target image.
-                    },
-                    {
-                        "rect": [[ 10, 10, 40, 50],[ 20, 20, 30, 30]]  // [xmin, ymin, xmax, ymax],
-                        "point" (optional): [[cx, cy]]. Point and bbox can not be provided at the same time.
-                        "prompt_image" (Union[str, Image.Image]): A prompt image for the target image.
-                    },
-                ]
-
-        Returns:
-           str: Return the url of the embedding, user can download the embedding from the url.
-        """
-        input_prompts = []
-        prompt_types = []
-        # check prompt type
-        for prompt in prompts:
-            if "rects" in prompt:
-                prompt_types.append("rects")
-            elif "points" in prompt:
-                prompt_types.append("points")
-            else:
-                assert False, "Invalid prompt type"
-        # check if prompt type is consistent
-        assert len(set(prompt_types)) == 1, "Prompt type must be consistent"
-        prompt_type = prompt_types[0]
-        for prompt in prompts:
-            if prompt_type == "rects":
-                prompt = BatchRectPrompt(
-                    image=self.get_image_url(prompt["prompt_image"]),
-                    rects=prompt["rects"],
-                )
-            elif prompt_type == "points":
-                prompt = BatchPointPrompt(
-                    image=self.get_image_url(prompt["prompt_image"]),
-                    points=prompt["points"],
-                )
-            input_prompts.append(prompt)
-        # call the API
-        task = TRexEmbdCustomize(batch_prompts=input_prompts)
-        self.client.run_task(task)
-        embd_url = task.result.embd
-        return embd_url
-
-    def embedding_inference(self, prompts: List[dict]):
-        """Prompt inference workflow. Users can provide prompt in safetensor format
-        on current image and get the boxes, scores, labels on current image. We take
-        batch as input and each image is a dict. Note that the maximum batch size is 4.
-
-        Args:
-            prompts (List[dict]): List of batch annotations, each batch annotation is a dict:
-                [
-                    # Batch 1
-                    {
-                        "image": "test1.jpg",
-                        "prompts": [
-                            {
-                                "category_id": 1,
-                                "embd": "cate1.safetenosrs",
-                            },
-                            {
-                                "category_id": 2,
-                                "embd": "cate2.safetenosrs",
-                            }
-                        ]
-                    }
-                    # Batch 2
-                    {
-                        "image": "test2.jpg",
-                        "prompts": [
-                            {
-                                "category_id": 1,
-                                "embd": "cate1.safetenosrs",
-                            },
-                            {
-                                "category_id": 2,
-                                "embd": "cate2.safetenosrs",
-                            }
-                        ]
-                    }
-                    ...
-                ]
+            target_image (Union[str, Image.Image]): The image to upload. Can be a file path or PIL.Image
+            base64_embedding (str): The base64 encoding of the embedding.
 
         Returns:
            Dict: Return dict in format:
@@ -281,30 +235,16 @@ class TRex2APIWrapper:
                         format is (xmin, ymin, ymin, ymax)
                 }
         """
-        # construct input prompts
-        input_prompts = []
-        for prompt in prompts:
-            prompt = BatchEmbdInfer(
-                image=self.get_image_url(prompt["image"]),
-                prompts=[
-                    BatchEmbdPrompt(
-                        category_id=prompt["prompts"][i]["category_id"],
-                        embd=self.get_image_url(prompt["prompts"][i]["embd"]),
-                    )
-                    for i in range(len(prompt["prompts"]))
-                ],
-            )
-            input_prompts.append(prompt)
-        # call the API
-        task = TRexEmbdInfer(input_prompts)
-        self.client.run_task(task)
-        return self.postprocess(task.result.object_batches)
+        prompt = self.convert_embedding_prompt(target_image, base64_embedding)
+        result = self.call_api(prompt)
+        detection_result = self.postprocess(result["data"]["result"]["objects"])
+        return detection_result
 
     def postprocess(self, object_batches):
         """Postprocess the result from the API
 
         Args:
-            object_batches (List[List[TRexObject]]): List of Lists. Each list contains the prediction
+            object_batches (List[Dict]): List of Dicts. Each dict contains the prediction
                 on each image. Each TRexObject contains the following keys:
                     - category_id (int): The category id of the object
                     - score (float): The score of the object
@@ -312,47 +252,21 @@ class TRex2APIWrapper:
 
         Returns:
             List[Dict]: Return a list of dict in format:
-                [
-                    {
-                        "scores": (List[float]): A list of scores for each object in the batch
-                        "labels": (List[int]): A list of labels for each object in the batch
-                        "boxes": (List[List[int]]): A list of boxes for each object in the batch
-                    }
-                ]
+                {
+                    "scores": (List[float]): A list of scores for each object in the batch
+                    "labels": (List[int]): A list of labels for each object in the batch
+                    "boxes": (List[List[int]]): A list of boxes for each object in the batch
+                }
+
         """
-        results = []
-        for batch in object_batches:
-            scores = []
-            labels = []
-            boxes = []
-            for obj in batch:
-                scores.append(obj.score)
-                if hasattr(obj, "category_id"):
-                    labels.append(obj.category_id)
-                else:
-                    # generic inference does not return category_id
-                    labels.append(0)
-                boxes.append(obj.bbox)
-            results.append({"scores": scores, "labels": labels, "boxes": boxes})
-        return results
-
-    def get_image_url(self, image: Union[str, np.ndarray]):
-        """Upload Image to server and return the url
-
-        Args:
-            image (Union[str, np.ndarray]): The image to upload. Can be a file path or np.ndarray.
-                If it is a np.ndarray, it will be saved to a temporary file.
-
-        Returns:
-            str: The url of the image
-        """
-        if isinstance(image, str):
-            url = self.client.upload_file(image)
-        else:
-            with tempfile.NamedTemporaryFile(delete=True, suffix=".png") as tmp_file:
-                # image is in numpy format, convert to PIL Image
-                image = Image.fromarray(image)
-                image.save(tmp_file, format="PNG")
-                tmp_file_path = tmp_file.name
-                url = self.client.upload_file(tmp_file_path)
-        return url
+        scores = []
+        labels = []
+        boxes = []
+        for obj in object_batches:
+            score = obj["score"]
+            category_id = obj["category_id"]
+            bbox = obj["bbox"]
+            scores.append(score)
+            labels.append(category_id)
+            boxes.append(bbox)
+        return {"scores": scores, "labels": labels, "boxes": boxes}

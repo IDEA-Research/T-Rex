@@ -29,35 +29,26 @@ def get_args():
 if __name__ == "__main__":
     args = get_args()
     trex2 = TRex2APIWrapper(args.token)
-
-    prompts = [
-        {
-            "image": "assets/trex2_api_examples/generic_target.jpg",
-            "prompts": [
-                {"category_id": 1, "embd": "demo_examples/football_player.safetensors"},
-            ],
-        }
-    ]
-    results = trex2.embedding_inference(prompts)
+    target_image = "assets/trex2_api_examples/generic_target.jpg"
+    embedding = "demo_examples/football_player_embedding.txt"
+    with open(embedding, "r") as f:
+        embedding = f.read()
+    result = trex2.embedding_inference(target_image, embedding)
     # filter out the boxes with low score
-    filtered_results = []
-    for result in results:
-        scores = np.array(result["scores"])
-        labels = np.array(result["labels"])
-        boxes = np.array(result["boxes"])
-        filter_mask = scores > args.box_threshold
-        filtered_result = {
-            "scores": scores[filter_mask],
-            "labels": labels[filter_mask],
-            "boxes": boxes[filter_mask],
-        }
-        filtered_results.append(filtered_result)
+    scores = np.array(result["scores"])
+    labels = np.array(result["labels"])
+    boxes = np.array(result["boxes"])
+    filter_mask = scores > args.box_threshold
+    filtered_result = {
+        "scores": scores[filter_mask],
+        "labels": labels[filter_mask],
+        "boxes": boxes[filter_mask],
+    }
     # visualize the results
     if not os.path.exists(args.vis_dir):
         os.makedirs(args.vis_dir)
-    for i, (prompt, result) in enumerate(zip(prompts, filtered_results)):
-        image_path = prompt["image"]
-        image = Image.open(image_path)
-        image = visualize(image, result, draw_score=True)
-        image.save(os.path.join(args.vis_dir, f"embedding_inference_{i}.jpg"))
-        print(f"Visualized image saved to {args.vis_dir}/embedding_inference_{i}.jpg")
+
+    image = Image.open(target_image)
+    image = visualize(image, filtered_result, draw_score=True)
+    image.save(os.path.join(args.vis_dir, f"embedding.jpg"))
+    print(f"Visualized image saved to {args.vis_dir}/embedding.jpg")

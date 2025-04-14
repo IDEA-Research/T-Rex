@@ -29,47 +29,48 @@ def get_args():
 if __name__ == "__main__":
     args = get_args()
     trex2 = TRex2APIWrapper(args.token)
+    # demo for box input
+    target_image = "assets/trex2_api_examples/interactive1.jpeg"
     prompts = [
-        {
-            "prompt_image": "assets/trex2_api_examples/interactive1.jpeg",
-            "type": "rect",
-            "prompts": [
+        dict(
+            image="assets/trex2_api_examples/interactive1.jpeg",
+            interactions=[
                 {
+                    "type": "rect",
                     "category_id": 1,
-                    "rects": [[347, 1259, 600, 1437], [1085, 1154, 1154, 1246]],
+                    "rect": [347, 1259, 600, 1437],
                 },
-                {"category_id": 2, "rects": [[1465, 787, 1497, 877]]},
+                {
+                    "type": "rect",
+                    "category_id": 1,
+                    "rect": [1085, 1154, 1154, 1246],
+                },
+                {
+                    "type": "rect",
+                    "category_id": 2,
+                    "rect": [1465, 787, 1497, 877],
+                },
             ],
-        },
-        {
-            "prompt_image": "assets/trex2_api_examples/interactive1.jpeg",
-            "type": "point",
-            "prompts": [
-                {"category_id": 1, "points": [[64, 383]]},
-                {"category_id": 2, "points": [[337, 316]]},
-            ],
-        },
+        )
     ]
-    results = trex2.interactve_inference(prompts)
+
+    result = trex2.visual_prompt_inference(target_image, prompts)[0]
     # filter out the boxes with low score
-    filtered_results = []
-    for result in results:
-        scores = np.array(result["scores"])
-        labels = np.array(result["labels"])
-        boxes = np.array(result["boxes"])
-        filter_mask = scores > args.box_threshold
-        filtered_result = {
-            "scores": scores[filter_mask],
-            "labels": labels[filter_mask],
-            "boxes": boxes[filter_mask],
-        }
-        filtered_results.append(filtered_result)
+
+    scores = np.array(result["scores"])
+    labels = np.array(result["labels"])
+    boxes = np.array(result["boxes"])
+    filter_mask = scores > args.box_threshold
+    filtered_result = {
+        "scores": scores[filter_mask],
+        "labels": labels[filter_mask],
+        "boxes": boxes[filter_mask],
+    }
     # visualize the results
     if not os.path.exists(args.vis_dir):
         os.makedirs(args.vis_dir)
-    for i, (prompt, result) in enumerate(zip(prompts, filtered_results)):
-        image_path = prompt["prompt_image"]
-        image = Image.open(image_path)
-        image = visualize(image, result, draw_score=True)
-        image.save(os.path.join(args.vis_dir, f"interactive_{i}.jpg"))
-        print(f"Visualized image saved to {args.vis_dir}/interactive_{i}.jpg")
+
+    image = Image.open(target_image)
+    image = visualize(image, filtered_result, draw_score=True)
+    image.save(os.path.join(args.vis_dir, f"interactive.jpg"))
+    print(f"Visualized image saved to {args.vis_dir}/interactive.jpg")

@@ -29,19 +29,38 @@ def get_args():
 if __name__ == "__main__":
     args = get_args()
     trex2 = TRex2APIWrapper(args.token)
+
     target_image = "assets/trex2_api_examples/generic_target.jpg"
     prompts = [
-        {
-            "prompt_image": "assets/trex2_api_examples/generic_prompt1.jpg",
-            "rects": [[692, 338, 725, 459]],
-        },
-        {
-            "prompt_image": "assets/trex2_api_examples/generic_prompt2.jpg",
-            "rects": [[561, 231, 634, 351]],
-        },
+        dict(
+            image="assets/trex2_api_examples/generic_prompt1.jpg",
+            interactions=[
+                {
+                    "type": "rect",
+                    "category_id": 1,
+                    "rect": [692, 338, 725, 459],
+                },
+                {
+                    "type": "rect",
+                    "category_id": 1,
+                    "rect": [561, 231, 634, 351],
+                },
+            ],
+        ),
+        dict(
+            image="assets/trex2_api_examples/generic_prompt2.jpg",
+            interactions=[
+                {
+                    "type": "rect",
+                    "category_id": 1,
+                    "rect": [561, 231, 634, 351],
+                },
+            ],
+        ),
     ]
-    result = trex2.generic_inference(target_image, prompts)
+    result = trex2.visual_prompt_inference(target_image, prompts)[0]
     # filter out the boxes with low score
+
     scores = np.array(result["scores"])
     labels = np.array(result["labels"])
     boxes = np.array(result["boxes"])
@@ -54,6 +73,7 @@ if __name__ == "__main__":
     # visualize the results
     if not os.path.exists(args.vis_dir):
         os.makedirs(args.vis_dir)
+
     image = Image.open(target_image)
     image = visualize(image, filtered_result, draw_score=True)
     image.save(os.path.join(args.vis_dir, f"generic.jpg"))
