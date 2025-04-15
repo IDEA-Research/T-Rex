@@ -447,4 +447,4 @@ if __name__ == "__main__":
             ],
             outputs=[output_image, num_count, coco_anno],
         )
-    demo.launch(server_name="192.168.81.138", server_port=5612, debug=True)
+    demo.launch()
