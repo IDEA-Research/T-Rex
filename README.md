@@ -123,7 +123,7 @@ and detect on the other image.
     </div>
 
 ## Customize Visual Prompt Embedding API
-In this workflow, you cam customize a visual embedding for a object category using multiple images. With this embedding, you can detect on any images.
+In this workflow, you can customize a visual embedding for a object category using multiple images. With this embedding, you can detect on any images.
 
   ```python
   python demo_examples/customize_embedding.py --token <your_token> 
