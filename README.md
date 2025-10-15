@@ -13,8 +13,9 @@
 </div>
 
 ----
-🎉 **[T-Rex Label](https://trexlabel.com?source=gt) surpasses 2,000 users!**  
-Just three months after launch, [T-Rex Label](https://trexlabel.com?source=gt) has grown to over 2,000 users. In our latest release, we’ve improved the annotation tool's user experience and expanded the YOLO format export, making it easier for researchers to quickly build datasets. For any feedback, feel free to reach out at [trexlabel_dm@idea.edu.cn](mailto:trexlabel_dm@idea.edu.cn).
+🔥 [2025/10/15] Rex-Omni: Still using traditional detectors? We've turned object detection into a simple "Next-Token Prediction" task with an MLLM! One model (**fully open-sourced**), zero-shot SOTA performance, tackling detection, referring, OCR, and GUI grounding all at once. Come see the next generation of perception models
+
+👉 [Check out Rex-Omni!](https://github.com/IDEA-Research/Rex-Omni)
 
 ----
 📌 You can get API access here [https://cloud.deepdataspace.com/dashboard/usage](https://cloud.deepdataspace.com/dashboard/usage). Once you get the API key, you can try T-Rex2 by following these example codes: [https://github.com/IDEA-Research/T-Rex/tree/trex2/demo_examples](https://github.com/IDEA-Research/T-Rex/tree/trex2/demo_examples)
